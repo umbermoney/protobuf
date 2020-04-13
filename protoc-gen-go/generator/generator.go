@@ -2239,7 +2239,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		ns := allocNames(base, "Get"+base)
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
-		jsonName := *field.Name
+		jsonName := LowerCamelCase(*field.Name)
 		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
 
 		oneof := field.OneofIndex != nil
@@ -2706,6 +2706,13 @@ func CamelCase(s string) string {
 // CamelCaseSlice is like CamelCase, but the argument is a slice of strings to
 // be joined with "_".
 func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, "_")) }
+
+// LowerCamelCase returns the lowerCamelCased name.
+func LowerCamelCase(s string) string {
+	str := CamelCase(s)
+
+	return strings.Join([]string{string(str[0] ^ ' '), str[1:]}, "")
+}
 
 // dottedSlice turns a sliced name into a dotted name.
 func dottedSlice(elem []string) string { return strings.Join(elem, ".") }
